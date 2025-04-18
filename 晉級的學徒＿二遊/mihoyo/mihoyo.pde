@@ -1,7 +1,9 @@
-
+PImage img;
 void setup(){
   size(800, 800);
   rectMode(CENTER);
+  img = loadImage("book.PNG");
+  imageMode(CENTER);
 }
 
 //生成怪物
@@ -31,24 +33,35 @@ class Player_id{
   }
 }
 
-
-
 //攻擊
+class Weapon_id{
+  PVector XY;
+  float angle;
+  float speed;
+  Weapon_id(PVector XY, float angle, float speed){
+    this.XY = XY;
+    this.angle = angle;
+    this.speed = speed;
+  }
+}
+ArrayList<Weapon_id> Weapon_id = new ArrayList<Weapon_id>();
 void mouseClicked() {
-  
+//攻擊
+  Weapon_id.add(new Weapon_id(new PVector (Player_id.XY.x + width/2, Player_id.XY.y + height/2), vector_angle(new PVector (0, 0),new PVector (mouseX - width/2, mouseY - height/2)), 10));
 }
 
 //變數
 int t = 0, T = 0, v = 10;
 Player_id Player_id = new Player_id(new PVector(0, 0), new PVector(0, 0), 100, 10);
 
+
 //主程式
 void draw(){
   background(100);
-  noStroke();
+  noStroke(); 
+  pushMatrix();
   
   //主要角色
-  pushMatrix();
   fill(255, 100);
   circle(width/2 - Player_id.speed.x, height/2 - Player_id.speed.y, 100);
   fill(255, 255);
@@ -58,6 +71,9 @@ void draw(){
   //移動
   translate(-Player_id.XY.x, -Player_id.XY.y);
   Player_id.XY.add(Player_id.speed);
+  float PX = Player_id.XY.x + width/2;
+  float PY = Player_id.XY.y + height/2;
+  PVector PXY = new PVector(PX, PY);  
   
   //windowMove(Player_id.XY.x, Player_id.XY.y);
   
@@ -69,12 +85,26 @@ void draw(){
   }
   text(T,50,100);
   textSize(100);
+
+  //武器
+  for (int i = 0; i < Weapon_id.size(); i++){
+    Weapon_id.get(i).XY.x += cos(Weapon_id.get(i).angle) * Weapon_id.get(i).speed;
+    Weapon_id.get(i).XY.y += sin(Weapon_id.get(i).angle) * Weapon_id.get(i).speed;
+    image(img, Weapon_id.get(i).XY.x, Weapon_id.get(i).XY.y, 100, 100);
+    for (int j = 0; j < Monster.size(); j++){
+      if (vector_length(Weapon_id.get(i).XY, Monster.get(j).XY) < 140){
+        Monster.get(j).HP -= Player_id.ATK;
+        println("hit!");
+        if (Monster.get(j).HP <= 0){
+          println("dead!");
+          Monster.remove(j);
+        }
+      }
+    }
+  }
   
   //生怪
   for (int i = 0; i < Monster.size(); i = i + 1){
-    float PX = Player_id.XY.x + width/2;
-    float PY = Player_id.XY.y + height/2;
-    PVector PXY = new PVector(PX, PY);
     Monster.get(i).XY.x -= cos(vector_angle(PXY, Monster.get(i).XY)) * 5;
     Monster.get(i).XY.y -= sin(vector_angle(PXY, Monster.get(i).XY)) * 5;
     Monster.get(i).monster(Monster.get(i).XY); 
@@ -82,7 +112,10 @@ void draw(){
       Player_id.HP -= 1;
       println("hit!");
       Monster.get(i).HP -= 100;
-      Monster.remove(i);
+      if (Monster.get(i).HP <= 0){
+        println("dead!");
+        Monster.remove(i);
+      }
     }
   }
 
