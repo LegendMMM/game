@@ -1,12 +1,60 @@
-PImage img;
+PImage book, timer, computer, pen, music, yaling;
 void setup(){
   size(800, 800);
   rectMode(CENTER);
-  img = loadImage("book.PNG");
   imageMode(CENTER);
+  book = loadImage("pic/book.PNG");
+  timer = loadImage("pic/timer.PNG");
+  computer = loadImage("pic/computer.PNG");
+  pen = loadImage("pic/pen.PNG");
+  music = loadImage("pic/music.PNG");
+  yaling = loadImage("pic/yaling.PNG");
 }
 
-//生成怪物
+//變數
+int t = 0, T = 0, v = 10;
+Player_id Player_id = new Player_id(new PVector(0, 0), new PVector(0, 0), 100, 10);
+ArrayList<Weapon_id> Weapon_id = new ArrayList<Weapon_id>();
+ArrayList<Monster_id> Monster = new ArrayList<Monster_id>();
+
+//主程式
+void draw(){
+  background(100);
+  pushMatrix();
+  
+  //主要角色
+  DrawPlayer();
+
+  //計時器
+  RunTimer();
+
+  //轉換座標系
+  translate(-Player_id.XY.x, -Player_id.XY.y);
+
+  //移動
+  Player_id.XY.add(Player_id.speed);
+  
+  
+  //windowMove(int(Player_id.XY.x), int(Player_id.XY.y));
+  
+
+  //武器
+  DrawWeapon();
+  
+  //生怪
+  DrawMonster();
+
+  if (keyPressed) {
+    if (key == 'm') {
+      Monster.add(new Monster_id(new PVector(random(0, width), random(0, height)), 100, 10));
+    }
+  }
+  popMatrix();
+
+}
+
+
+//怪物
 class Monster_id{
   PVector XY;
   int HP, ATK;
@@ -15,13 +63,19 @@ class Monster_id{
     this.HP = HP;
     this.ATK = ATK;
   }
-  void monster(PVector m){
+  void monster(PVector m, String name){
     stroke(153);
     rect(m.x, m.y, 80, 80);
+    textAlign(CENTER);
+    textSize(40);
+    fill(0);
+    text(name, m.x, m.y);
+    textSize(20);
+    fill(255);
+    text("HP: " + HP, m.x, m.y + 60);
   }
 }
-ArrayList<Monster_id> Monster = new ArrayList<Monster_id>();
-
+//角色
 class Player_id{
   PVector XY, speed;
   int HP, ATK;
@@ -32,8 +86,7 @@ class Player_id{
     this.ATK = ATK;
   }
 }
-
-//攻擊
+//武器
 class Weapon_id{
   PVector XY;
   float angle;
@@ -44,53 +97,38 @@ class Weapon_id{
     this.speed = speed;
   }
 }
-ArrayList<Weapon_id> Weapon_id = new ArrayList<Weapon_id>();
-void mouseClicked() {
-//攻擊
-  Weapon_id.add(new Weapon_id(new PVector (Player_id.XY.x + width/2, Player_id.XY.y + height/2), vector_angle(new PVector (0, 0),new PVector (mouseX - width/2, mouseY - height/2)), 10));
-}
-
-//變數
-int t = 0, T = 0, v = 10;
-Player_id Player_id = new Player_id(new PVector(0, 0), new PVector(0, 0), 100, 10);
 
 
-//主程式
-void draw(){
-  background(100);
+//畫角色
+void DrawPlayer(){
   noStroke(); 
-  pushMatrix();
-  
-  //主要角色
   fill(255, 100);
   circle(width/2 - Player_id.speed.x, height/2 - Player_id.speed.y, 100);
   fill(255, 255);
   circle(width/2, height/2, 100);
-  println(Player_id.HP);
-
-  //移動
-  translate(-Player_id.XY.x, -Player_id.XY.y);
-  Player_id.XY.add(Player_id.speed);
-  float PX = Player_id.XY.x + width/2;
-  float PY = Player_id.XY.y + height/2;
-  PVector PXY = new PVector(PX, PY);  
-  
-  //windowMove(Player_id.XY.x, Player_id.XY.y);
-  
-  //計時器
+  textSize(20);
+  textAlign(CENTER);
+  text("HP: " + Player_id.HP, width/2, height/2 + 70);
+  text("XY: " + int(Player_id.XY.x) + ", " + int(Player_id.XY.y), width/2, height/2 + 90);
+}
+//計時器
+void RunTimer(){
   t += 1;
   if(t > 60){
     T += 1;
     t = 0;
   }
-  text(T,50,100);
-  textSize(100);
-
-  //武器
+  image(timer, width/2 - 25, 25, 50, 50);
+  textAlign(LEFT);
+  textSize(50);
+  text(T, width/2, 50);
+}
+//畫武器
+void DrawWeapon(){
   for (int i = 0; i < Weapon_id.size(); i++){
     Weapon_id.get(i).XY.x += cos(Weapon_id.get(i).angle) * Weapon_id.get(i).speed;
     Weapon_id.get(i).XY.y += sin(Weapon_id.get(i).angle) * Weapon_id.get(i).speed;
-    image(img, Weapon_id.get(i).XY.x, Weapon_id.get(i).XY.y, 100, 100);
+    image(book, Weapon_id.get(i).XY.x, Weapon_id.get(i).XY.y, 100, 100);
     for (int j = 0; j < Monster.size(); j++){
       if (vector_length(Weapon_id.get(i).XY, Monster.get(j).XY) < 140){
         Monster.get(j).HP -= Player_id.ATK;
@@ -102,12 +140,16 @@ void draw(){
       }
     }
   }
-  
-  //生怪
+}
+//畫怪物
+void DrawMonster(){
+  float PX = Player_id.XY.x + width/2;
+  float PY = Player_id.XY.y + height/2;
+  PVector PXY = new PVector(PX, PY);
   for (int i = 0; i < Monster.size(); i = i + 1){
     Monster.get(i).XY.x -= cos(vector_angle(PXY, Monster.get(i).XY)) * 5;
     Monster.get(i).XY.y -= sin(vector_angle(PXY, Monster.get(i).XY)) * 5;
-    Monster.get(i).monster(Monster.get(i).XY); 
+    Monster.get(i).monster(Monster.get(i).XY, str(i)); 
     if (vector_length(PXY, Monster.get(i).XY) < 50){
       Player_id.HP -= 1;
       println("hit!");
@@ -118,55 +160,49 @@ void draw(){
       }
     }
   }
-
-  if (keyPressed) {
-    if (key == 'm') {
-      Monster.add(new Monster_id(new PVector(random(0, width), random(0, height)), 100, 10));
-    }
-  }
-
-  popMatrix();
-
 }
 
+
+//攻擊
+void mouseClicked() {
+  Weapon_id.add(new Weapon_id(new PVector (Player_id.XY.x + width/2, Player_id.XY.y + height/2), vector_angle(new PVector (0, 0),new PVector (mouseX - width/2, mouseY - height/2)), 10));
+}
+//移動
 void keyPressed(){
-    if (key == 'w' && Player_id.speed.y > -10) {
+    if (key == 'w' && Player_id.speed.y > -v) {
       Player_id.speed.y -= v;
     }
-    if (key == 'a' && Player_id.speed.x > -10) {
+    if (key == 'a' && Player_id.speed.x > -v) {
       Player_id.speed.x -= v;
     }
-    if (key == 's' && Player_id.speed.y < 10) {
+    if (key == 's' && Player_id.speed.y < v) {
       Player_id.speed.y += v;
     }
-    if (key == 'd' && Player_id.speed.x < 10) {
+    if (key == 'd' && Player_id.speed.x < v) {
       Player_id.speed.x += v;
     }
 }
-
 void keyReleased() {
-    if (key == 'w' && Player_id.speed.y < 10) {
+    if (key == 'w' && Player_id.speed.y < v) {
       Player_id.speed.y += v;
     }
-    if (key == 'a' && Player_id.speed.x < 10) {
+    if (key == 'a' && Player_id.speed.x < v) {
       Player_id.speed.x += v;
     }
-    if (key == 's' && Player_id.speed.y > -10) {
+    if (key == 's' && Player_id.speed.y > -v) {
       Player_id.speed.y -= v;
     }
-    if (key == 'd' && Player_id.speed.x > -10) {
+    if (key == 'd' && Player_id.speed.x > -v) {
       Player_id.speed.x -= v;
     }
 }
 
 
-
-
+//向量運算
 float vector_length(PVector v1, PVector v2){
   float length = dist(v1.x, v1.y, v2.x, v2.y);
   return length;
 }
-
 float vector_angle(PVector v1,PVector v2){
   float angle = atan2(v2.y - v1.y, v2.x - v1.x);
   return angle;
