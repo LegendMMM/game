@@ -251,6 +251,8 @@ void shop(){
 }
 
 
+
+
 //向量運算
 float vector_length(PVector v1, PVector v2){
   float length = dist(v1.x, v1.y, v2.x, v2.y);
