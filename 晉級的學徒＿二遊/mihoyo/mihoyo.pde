@@ -12,7 +12,7 @@ void setup(){
 }
 
 //變數
-int t = 0, T = 0, v = 10, credit = 0, stage = 0;
+int t = 0, T = 0, v = 10, credit = 0, stage = 0, weapon_mode = 4, mode3_CD = 0;
 Player_id Player_id = new Player_id(new PVector(0, 0), new PVector(0, 0), 100, 10);
 ArrayList<Weapon_id> Weapon_id = new ArrayList<Weapon_id>();
 ArrayList<Monster_id> Monster = new ArrayList<Monster_id>();
@@ -123,6 +123,7 @@ void morning(){
   popMatrix();
   //主要角色
   DrawPlayer();
+  text(Weapon_id.size(), 400, 300);
 }
 
 //畫角色
@@ -140,7 +141,7 @@ void DrawPlayer(){
 //計時器
 void RunTimer(){
   t += 1;
-  if(t > 60){
+  if(t > 59){
     T += 1;
     t = 0;
   }
@@ -151,6 +152,25 @@ void RunTimer(){
 }
 //畫武器
 void DrawWeapon(){
+  PVector PXY = new PVector(Player_id.XY.x + width/2, Player_id.XY.y + height/2);
+  //mode 1
+  if (weapon_mode % 2 == 1 && keyPressed && t % 30 == 0){
+    Weapon_id.add(new Weapon_id(PXY, vector_angle(new PVector (0, 0), Player_id.speed), 15, 300));
+  }
+  //mode 2
+  if (weapon_mode % 4 > 1 && t % 30 == 0 && Monster.size() > 0){
+    Weapon_id.add(new Weapon_id(PXY, vector_angle(PXY, Monster.get(int(random(Monster.size()))).XY), 15, 300));
+  }
+  //mode 3
+  if (weapon_mode % 8 > 3 && key == ' '){
+    if (mode3_CD <= 0){
+      for (int i = 0; i < 5; i++){
+        Weapon_id.add(new Weapon_id(PXY, vector_angle(new PVector (width/2, height/2),new PVector (mouseX, mouseY)) + random(-2,2), 15, 300));
+      }
+      mode3_CD = 300;
+    }
+    mode3_CD -= 1;
+  }
   for (int i = Weapon_id.size() - 1; i >= 0; i--){
     Weapon_id.get(i).XY.x += cos(Weapon_id.get(i).angle) * Weapon_id.get(i).speed;
     Weapon_id.get(i).XY.y += sin(Weapon_id.get(i).angle) * Weapon_id.get(i).speed;
@@ -203,7 +223,7 @@ void DrawMonster(){
 
 //攻擊
 void mousePressed() {
-  Weapon_id.add(new Weapon_id(new PVector (Player_id.XY.x + width/2, Player_id.XY.y + height/2), vector_angle(new PVector (0, 0),new PVector (mouseX - width/2, mouseY - height/2)), 10, 300));
+  Weapon_id.add(new Weapon_id(new PVector (Player_id.XY.x + width/2, Player_id.XY.y + height/2), vector_angle(new PVector (0, 0),new PVector (mouseX - width/2, mouseY - height/2)), 15, 300));
 }
 //移動
 void keyPressed(){
