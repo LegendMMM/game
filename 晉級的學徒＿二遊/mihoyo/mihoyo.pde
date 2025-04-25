@@ -165,10 +165,11 @@ void DrawWeapon(){
   if (weapon_mode % 8 > 3 && key == ' '){
     if (mode3_CD <= 0){
       for (int i = 0; i < 5; i++){
-        Weapon_id.add(new Weapon_id(PXY, vector_angle(new PVector (width/2, height/2),new PVector (mouseX, mouseY)) + random(-2,2), 15, 300));
+        float angle = vector_angle(new PVector (width/2, height/2),new PVector (mouseX, mouseY)) + random(-2,2);
+        Weapon_id.add(new Weapon_id(PXY, angle, 15, 300));
       }
-      mode3_CD = 300;
-    }
+      mode3_CD = 30;
+    } 
     mode3_CD -= 1;
   }
   for (int i = Weapon_id.size() - 1; i >= 0; i--){
