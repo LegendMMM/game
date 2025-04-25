@@ -162,16 +162,16 @@ void DrawWeapon(){
     Weapon_id.add(new Weapon_id(PXY, vector_angle(PXY, Monster.get(int(random(Monster.size()))).XY), 15, 300));
   }
   //mode 3
-  if (weapon_mode % 8 > 3 && key == ' '){
+  if (weapon_mode % 8 > 3 && key == ' ' && keyPressed){
     if (mode3_CD <= 0){
       for (int i = 0; i < 5; i++){
-        float angle = vector_angle(new PVector (width/2, height/2),new PVector (mouseX, mouseY)) + random(-2,2);
-        Weapon_id.add(new Weapon_id(PXY, angle, 15, 300));
+        float angle = vector_angle(new PVector (width/2, height/2),new PVector (mouseX, mouseY)) + random(-0.5,0.5);
+        Weapon_id.add(new Weapon_id(new PVector(PXY.x, PXY.y), angle, 15, 300));
       }
-      mode3_CD = 30;
+      mode3_CD = 300;
     } 
-    mode3_CD -= 1;
   }
+  mode3_CD -= 1;
   for (int i = Weapon_id.size() - 1; i >= 0; i--){
     Weapon_id.get(i).XY.x += cos(Weapon_id.get(i).angle) * Weapon_id.get(i).speed;
     Weapon_id.get(i).XY.y += sin(Weapon_id.get(i).angle) * Weapon_id.get(i).speed;
