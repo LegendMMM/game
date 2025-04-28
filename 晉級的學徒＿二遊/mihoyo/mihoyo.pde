@@ -1,5 +1,9 @@
 PImage book, timer, computer, pen, music, yaling;
+PFont TCFont;
+
 void setup(){
+  TCFont = createFont("NotoSansTC-Black.otf", 28);
+  textFont(TCFont);
   size(800, 800);
   rectMode(CENTER);
   imageMode(CENTER);
@@ -12,7 +16,7 @@ void setup(){
 }
 
 //變數
-int t = 0, T = 0, v = 10, credit = 0, stage = 0, weapon_mode = 4, mode3_CD = 0;
+int t = 0, T = 0, v = 10, credit = 0, stage = 0, weapon_mode = 0, mode3_CD = 0;
 Player_id Player_id = new Player_id(new PVector(0, 0), new PVector(0, 0), 100, 10);
 ArrayList<Weapon_id> Weapon_id = new ArrayList<Weapon_id>();
 ArrayList<Monster_id> Monster = new ArrayList<Monster_id>();
@@ -44,7 +48,9 @@ void draw(){
 class Monster_id{
   PVector XY;
   float HP, ATK, speed;
-  Monster_id(PVector XY, float HP, float ATK, float speed){
+  int time;
+  Monster_id(PVector XY, float HP, float ATK, float speed, int time){
+    this.time = time;
     this.XY = XY;
     this.HP = HP;
     this.ATK = ATK;
@@ -90,7 +96,7 @@ class Weapon_id{
 
 void morning(){
   background(200);
-  if (credit >= 50){
+  if (credit >= 5000){
     stage = 1;
     Weapon_id = new ArrayList<Weapon_id>();
     Monster =  new ArrayList<Monster_id>();
@@ -115,10 +121,9 @@ void morning(){
   //生怪
   DrawMonster();
 
-  if (keyPressed) {
-    if (key == 'm') {
-      Monster.add(new Monster_id(new PVector(random(0, width), random(0, height)), int(random(10, 100)), 10, random(1, 10)));
-    }
+  if ( t % 10 == 0){
+    float randomangle = random(0, 2 * PI);
+    Monster.add(new Monster_id(new PVector(Player_id.XY.x + cos(randomangle) * random(width, width * 2),Player_id.XY.y + sin(randomangle) * random(height, height * 2)), int(random(10, 100)), 10, random(1,7.5), 0));
   }
   popMatrix();
   //主要角色
@@ -179,24 +184,39 @@ void DrawWeapon(){
     image(book, Weapon_id.get(i).XY.x, Weapon_id.get(i).XY.y, 100, 100);
     boolean weaponRemoved = false;
     for (int j = Monster.size() - 1; j >= 0; j--){
-      if (vector_length(Weapon_id.get(i).XY, Monster.get(j).XY) < 140){
+      Monster.get(j).time -= 1;
+      if (vector_length(Weapon_id.get(i).XY, Monster.get(j).XY) < 140 && Monster.get(j).time <= 0){
         Monster.get(j).HP -= Player_id.ATK;
         println("hit!");
-        if (Monster.get(j).HP <= 0){
+        //mode 5
+        if (weapon_mode % 32 > 15){
+          Monster.get(j).time = 30;
+        }else{
+          Weapon_id.remove(i);
+          weaponRemoved = true;
+          break;
+        }
+      }
+      if (Monster.get(j).HP <= 0 ){
           println("dead!");
           Monster.remove(j);
           credit += 1;
-        }
-        Weapon_id.remove(i);
-        weaponRemoved = true;
-        break;
       }
     }
     if (weaponRemoved){
       break;
     }
     if (Weapon_id.get(i).time <= 0){
-      Weapon_id.remove(i);
+      //mode 4
+      if (weapon_mode % 16 > 7 && Weapon_id.get(i).speed != 0){
+        Weapon_id.get(i).speed = 0;
+        Weapon_id.get(i).time += 300;
+        
+      }
+      else{
+        Weapon_id.remove(i);
+        break;
+      }
     }
   }
 }
