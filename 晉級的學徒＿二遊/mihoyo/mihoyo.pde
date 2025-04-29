@@ -16,7 +16,8 @@ void setup(){
 }
 
 //變數
-int t = 0, T = 0, v = 10, credit = 0, stage = 0, weapon_mode = 0, mode3_CD = 0;
+int t = 0, T = 0, v = 10, credit = -1000, stage = 0, level = 1, weapon_mode = 0, mode3_CD = 0;
+int temp = 0;
 Player_id Player_id = new Player_id(new PVector(0, 0), new PVector(0, 0), 100, 10);
 ArrayList<Weapon_id> Weapon_id = new ArrayList<Weapon_id>();
 ArrayList<Monster_id> Monster = new ArrayList<Monster_id>();
@@ -30,6 +31,7 @@ void draw(){
   }
   //商店
   if (stage == 1){
+    temp += 1;
     background(100);
     shop();
   }
@@ -96,7 +98,7 @@ class Weapon_id{
 
 void morning(){
   background(200);
-  if (credit >= 5000){
+  if (credit >= 50){
     stage = 1;
     Weapon_id = new ArrayList<Weapon_id>();
     Monster =  new ArrayList<Monster_id>();
@@ -128,7 +130,7 @@ void morning(){
   popMatrix();
   //主要角色
   DrawPlayer();
-  text(Weapon_id.size(), 400, 300);
+  text(level, 400, 300);
 }
 
 //畫角色
@@ -160,18 +162,18 @@ void DrawWeapon(){
   PVector PXY = new PVector(Player_id.XY.x + width/2, Player_id.XY.y + height/2);
   //mode 1
   if (weapon_mode % 2 == 1 && keyPressed && t % 30 == 0){
-    Weapon_id.add(new Weapon_id(PXY, vector_angle(new PVector (0, 0), Player_id.speed), 15, 300));
+    Weapon_id.add(new Weapon_id(new PVector(Player_id.XY.x + width/2, Player_id.XY.y + height/2), vector_angle(new PVector (0, 0), Player_id.speed), 15, 300));
   }
   //mode 2
   if (weapon_mode % 4 > 1 && t % 30 == 0 && Monster.size() > 0){
-    Weapon_id.add(new Weapon_id(PXY, vector_angle(PXY, Monster.get(int(random(Monster.size()))).XY), 15, 300));
+    Weapon_id.add(new Weapon_id(PXY, vector_angle(new PVector(Player_id.XY.x + width/2, Player_id.XY.y + height/2), Monster.get(int(random(Monster.size()))).XY), 15, 300));
   }
   //mode 3
   if (weapon_mode % 8 > 3 && key == ' ' && keyPressed){
     if (mode3_CD <= 0){
-      for (int i = 0; i < 5; i++){
+      for (int i = 0; i < 10; i++){
         float angle = vector_angle(new PVector (width/2, height/2),new PVector (mouseX, mouseY)) + random(-0.5,0.5);
-        Weapon_id.add(new Weapon_id(new PVector(PXY.x, PXY.y), angle, 15, 300));
+        Weapon_id.add(new Weapon_id(new PVector(PXY.x, PXY.y), random(0, 2 * PI), 15, 300));
       }
       mode3_CD = 300;
     } 
@@ -184,13 +186,12 @@ void DrawWeapon(){
     image(book, Weapon_id.get(i).XY.x, Weapon_id.get(i).XY.y, 100, 100);
     boolean weaponRemoved = false;
     for (int j = Monster.size() - 1; j >= 0; j--){
-      Monster.get(j).time -= 1;
       if (vector_length(Weapon_id.get(i).XY, Monster.get(j).XY) < 140 && Monster.get(j).time <= 0){
         Monster.get(j).HP -= Player_id.ATK;
         println("hit!");
         //mode 5
         if (weapon_mode % 32 > 15){
-          Monster.get(j).time = 30;
+          Monster.get(j).time = 17;
         }else{
           Weapon_id.remove(i);
           weaponRemoved = true;
@@ -226,6 +227,7 @@ void DrawMonster(){
   float PY = Player_id.XY.y + height/2;
   PVector PXY = new PVector(PX, PY);
   for (int i = 0; i < Monster.size(); i = i + 1){
+    Monster.get(i).time -= 1;
     Monster.get(i).XY.x -= cos(vector_angle(PXY, Monster.get(i).XY)) * Monster.get(i).speed;
     Monster.get(i).XY.y -= sin(vector_angle(PXY, Monster.get(i).XY)) * Monster.get(i).speed;
     Monster.get(i).monster(Monster.get(i).XY, str(i)); 
@@ -283,10 +285,46 @@ void shop(){
   image(music, width/2, height/2, width - 100, 100);
   image(book, width/2, height/2 - 100, width - 100, 100);
   image(yaling, width/2, height/2 - 200, width - 100, 100);
-  if (mouseX > width/2 - 200 && mouseX < width/2 + 200 && mouseY > height/2 - 200 && mouseY < height/2 + 200){
-    if (mousePressed){
+  if (mousePressed && temp >= 60){
+    //1
+    if (weapon_mode % 2 == 0 && mouseX > 50 && mouseX < width - 50 && mouseY > height/2 + 150 && mouseY < height/2 + 250){
+      weapon_mode += 1;
       stage = 0;
       credit -= 50;
+      level += 1;
+      temp = 0;
+    }
+    //2
+    if (weapon_mode % 4 <= 1 && mouseX > 50 && mouseX < width - 50 && mouseY > height/2 + 50 && mouseY < height/2 + 150){
+      weapon_mode += 2;
+      stage = 0;
+      credit -= 50;
+      level += 1;
+      temp = 0;
+    }
+    //3
+    if (weapon_mode % 8 <= 3 && mouseX > 50 && mouseX < width - 50 && mouseY > height/2 - 50 && mouseY < height/2 + 50){
+      weapon_mode += 4;
+      stage = 0;
+      credit -= 50;
+      level += 1;
+      temp = 0;
+    }
+    //4
+    if (weapon_mode % 16 <= 7 && mouseX > 50 && mouseX < width - 50 && mouseY > height/2 - 150 && mouseY < height/2 - 50){
+      weapon_mode += 8;
+      stage = 0;
+      credit -= 50;
+      level += 1;
+      temp = 0;
+    }
+    //5
+    if (weapon_mode % 32 <= 15 && mouseX > 50 && mouseX < width - 50 && mouseY > height/2 - 250 && mouseY < height/2 - 150){
+      weapon_mode += 16;
+      stage = 0;
+      credit -= 50;
+      level += 1;
+      temp = 0;
     }
   }
 }
