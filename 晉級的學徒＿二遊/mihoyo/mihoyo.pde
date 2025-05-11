@@ -1,4 +1,4 @@
-PImage book, timer, computer, pen, music, yaling;
+PImage book, timer, computer, pen, music, yaling, backgorund, playerL, playerR;
 PFont TCFont;
 
 void setup(){
@@ -13,18 +13,23 @@ void setup(){
   pen = loadImage("pic/pen.PNG");
   music = loadImage("pic/music.PNG");
   yaling = loadImage("pic/yaling.PNG");
+  backgorund = loadImage("pic/background.PNG");
+  playerL = loadImage("pic/playerL.PNG");
+  playerR = loadImage("pic/playerR.PNG");
 }
 
 //變數
-int t = 0, T = 0, v = 10, credit = -1000, stage = 0, level = 1, weapon_mode = 0, mode3_CD = 0;
+int t = 0, T = 0, v = 10, credit = 0, stage = -1, level = 1, weapon_mode = 0, mode3_CD = 0, face = 0;
 int temp = 0;
-Player_id Player_id = new Player_id(new PVector(0, 0), new PVector(0, 0), 100, 10);
+Player_id Player_id = new Player_id(new PVector(0, 0), new PVector(0, 0), 10, 10);
 ArrayList<Weapon_id> Weapon_id = new ArrayList<Weapon_id>();
 ArrayList<Monster_id> Monster = new ArrayList<Monster_id>();
 
 //主程式
 void draw(){
-
+  if (stage == -1){
+    open();
+  }
   //早上
   if (stage == 0){
     morning();
@@ -34,6 +39,27 @@ void draw(){
     temp += 1;
     background(100);
     shop();
+  }
+  //結束
+  if (Player_id.HP <= 0){
+    background(0);
+    fill(255, 0, 0);
+    textAlign(CENTER);
+    textSize(50);
+    text("你沒畢業", width/2, height/2 - 100);
+    textSize(30);
+    text("獲得學分: " + credit, width/2, height/2);
+    stage = 2;
+  }
+  if (credit >= 128){
+    background(0);
+    fill(255);
+    textAlign(CENTER);
+    textSize(50);
+    text("恭喜你畢業了", width/2, height/2 - 100);
+    textSize(30);
+    text("獲得學分: " + credit, width/2, height/2);
+    stage = 2;
   }
 
   //學分
@@ -51,7 +77,9 @@ class Monster_id{
   PVector XY;
   float HP, ATK, speed;
   int time;
-  Monster_id(PVector XY, float HP, float ATK, float speed, int time){
+  String name;
+  Monster_id(PVector XY, float HP, float ATK, float speed, int time, String name){
+    this.name = name;
     this.time = time;
     this.XY = XY;
     this.HP = HP;
@@ -95,13 +123,34 @@ class Weapon_id{
   }
 }
 
+void open(){
+    background(0);
+    fill(255);
+    textAlign(CENTER);
+    textSize(50);
+    text("遊戲介紹", width/2, height/2 - 100);
+    textSize(30);
+    text("遊玩方式", width/2, height/2);
+    text("使用wasd進行上下左右移動，並且玩家會保持在畫面中心。", width/2, height/2 + 50);
+    text("你可以使用滑鼠來射擊", width/2, height/2 + 100);
+    text("獲得足夠的分數(50分)時，會進入到商店畫面。", width/2, height/2 + 150);
+    text("死亡或是學分夠了，即結束遊戲。", width/2, height/2 + 200);
+    text("按下空白鍵開始遊戲", width/2, height/2 + 300);
+    if (key == ' '){
+      stage = 0;
+    }
+}
 
 void morning(){
   background(200);
-  if (credit >= 50){
+  if (credit >= 50 && weapon_mode != 31){
     stage = 1;
-    Weapon_id = new ArrayList<Weapon_id>();
-    Monster =  new ArrayList<Monster_id>();
+  }
+  imageMode(CENTER);
+  for (int i = 0; i < 4; i++){
+    for (int j = 0; j < 4; j++){
+      image(backgorund, width*(i -3/2) + (-Player_id.XY.x % width), height*(j -3/2) + (-Player_id.XY.y % height), width, height);
+    }
   }
   pushMatrix();
   
@@ -125,7 +174,18 @@ void morning(){
 
   if ( t % 10 == 0){
     float randomangle = random(0, 2 * PI);
-    Monster.add(new Monster_id(new PVector(Player_id.XY.x + cos(randomangle) * random(width, width * 2),Player_id.XY.y + sin(randomangle) * random(height, height * 2)), int(random(10, 100)), 10, random(1,7.5), 0));
+    int randomname = int(random(0, 2));
+    String m_name = "";
+    if (randomname == 0){
+      m_name = "中";
+    }
+    if (randomname == 1){
+      m_name = "英";
+    }
+    if (randomname == 2){
+      m_name = "文";
+    }
+    Monster.add(new Monster_id(new PVector(Player_id.XY.x + cos(randomangle) * random(width, width * 2),Player_id.XY.y + sin(randomangle) * random(height, height * 2)), int(random(10, 100)), 10, random(1,7.5), 0, m_name));
   }
   popMatrix();
   //主要角色
@@ -135,11 +195,14 @@ void morning(){
 
 //畫角色
 void DrawPlayer(){
-  noStroke(); 
-  fill(255, 100);
-  circle(width/2 - Player_id.speed.x, height/2 - Player_id.speed.y, 100);
-  fill(255, 255);
-  circle(width/2, height/2, 100);
+  switch (face){
+    case 0:
+      image(playerR, width/2, height/2, 100, 100);
+      break;
+    case 1:
+      image(playerL, width/2, height/2, 100, 100);
+      break; 
+  }
   textSize(20);
   textAlign(CENTER);
   text("HP: " + Player_id.HP, width/2, height/2 + 70);
@@ -230,7 +293,7 @@ void DrawMonster(){
     Monster.get(i).time -= 1;
     Monster.get(i).XY.x -= cos(vector_angle(PXY, Monster.get(i).XY)) * Monster.get(i).speed;
     Monster.get(i).XY.y -= sin(vector_angle(PXY, Monster.get(i).XY)) * Monster.get(i).speed;
-    Monster.get(i).monster(Monster.get(i).XY, str(i)); 
+    Monster.get(i).monster(Monster.get(i).XY, Monster.get(i).name); 
     if (vector_length(PXY, Monster.get(i).XY) < 50){
       Player_id.HP -= 1;
       println("hit!");
@@ -255,12 +318,14 @@ void keyPressed(){
     }
     if (key == 'a' && Player_id.speed.x > -v) {
       Player_id.speed.x -= v;
+      face = 1;
     }
     if (key == 's' && Player_id.speed.y < v) {
       Player_id.speed.y += v;
     }
     if (key == 'd' && Player_id.speed.x < v) {
       Player_id.speed.x += v;
+      face = 0;
     }
 }
 void keyReleased() {
@@ -280,11 +345,49 @@ void keyReleased() {
 
 //商店
 void shop(){
-  image(computer, width/2, height/2 + 200, width - 100, 100);
-  image(pen, width/2, height/2 + 100, width - 100, 100);
-  image(music, width/2, height/2, width - 100, 100);
-  image(book, width/2, height/2 - 100, width - 100, 100);
-  image(yaling, width/2, height/2 - 200, width - 100, 100);
+  rectMode(CENTER);
+  fill(255);
+  stroke(0);
+  rect(width/2, height/2 + 200, width - 100, 100);
+  rect(width/2, height/2 + 100, width - 100, 100);
+  rect(width/2, height/2, width - 100, 100);
+  rect(width/2, height/2 - 100, width - 100, 100);
+  rect(width/2, height/2 - 200, width - 100, 100);
+
+  textAlign(CENTER);
+  textSize(20);
+  fill(0);
+  text("每按下方向鍵，朝該方向射出一本書本", width/2, height/2 + 200);
+  if (weapon_mode % 2 == 1){
+    fill(100, 0, 0);
+    text("已解鎖", width/2, height/2 + 200 - 25);
+    fill(0);
+  }
+  text("每過一段時間隨機鎖定一個敵人射擊", width/2, height/2 + 100);
+  if (weapon_mode % 4 > 1){
+    fill(100, 0, 0);
+    text("已解鎖", width/2, height/2 + 100 - 25);
+    fill(0);
+  }
+  text("按下空白鍵，朝四面八方散射書本", width/2, height/2);
+  if (weapon_mode % 8 > 3){
+    fill(100, 0, 0);
+    text("已解鎖", width/2, height/2 - 25);
+    fill(0);
+  }
+  text("射出去的書本不會立即消失，將會停留在原地造成持續傷害，持續一段時間", width/2, height/2 - 100);
+  if (weapon_mode % 16 > 7){
+    fill(100, 0, 0);
+    text("已解鎖", width/2, height/2 - 100 - 25);
+    fill(0);
+  }
+  text("書本觸碰到敵人後將不會消失，改為貫穿傷害", width/2, height/2 - 200);
+  if (weapon_mode % 32 > 15){
+    fill(100, 0, 0);
+    text("已解鎖", width/2, height/2 - 200 - 25);
+    fill(0);
+  }
+  
   if (mousePressed && temp >= 60){
     //1
     if (weapon_mode % 2 == 0 && mouseX > 50 && mouseX < width - 50 && mouseY > height/2 + 150 && mouseY < height/2 + 250){
