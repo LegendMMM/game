@@ -27,8 +27,18 @@ void DrawPlayer() {
     case 1: image(computer, width/2 + 40, height/2 + 25, 50, 50); break;
     case 2: image(music, width/2 + 40, height/2 + 25, 50, 50); break;
     case 3: image(pen, width/2 + 40, height/2 + 25, 50, 50); break;
-    case 4: image(yaling, width/2 + 40, height/2 + 25, 50, 50); break;
+    case 4: image(yaling, width/2 + 40, height/2 + 25, 50, 50); 
+  // mode5 站著不動時回血
+  
+    if (weapon_mode % 32 > 15) {
+      if (Player_id.speed.x == 0 && Player_id.speed.y == 0) {
+        if (frameCount % 60 == 0) {  // 每60幀回復1點血量 (大約每秒)
+          Player_id.HP = min(Player_id.HP + 1, 100);  // 血量上限為100
+        }
+      }
+    }break;
   }
+
   textSize(20);
   textAlign(CENTER);
   text("HP: " + Player_id.HP, width/2, height/2 + 70);

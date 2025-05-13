@@ -95,11 +95,11 @@ void shop() {
                             "", 
                             "", 
                             ""}; break;
-        case 4: ability = new String[]{"", 
-                            "", 
-                            "", 
-                            "", 
-                            ""}; break;
+        case 4: ability = new String[]{"攻擊擊退", 
+                            "空白鍵向前衝刺 消滅路進上敵人", 
+                            "加大啞鈴", 
+                            "攻擊時給怪物上dot狀態", 
+                            "站著時每秒回一滴血"}; break;
     }
     
     for (int i = 0; i < 5; i++) {
