@@ -34,15 +34,24 @@ void morning() {
     Player_id.XY.add(Player_id.speed);
     switch (career) {
         case 0: DrawWeapon(); break;
+        case 1: DrawWeapon_1(); break;
+        case 2: DrawWeapon_2(); break;
+        case 3: DrawWeapon_3(); break;
         case 4: DrawWeapon_4(); break;
     }
-    DrawWeapon();
     DrawMonster();
 
     if (t % 10 == 0) {
         float randomangle = random(0, 2 * PI);
-        int randomname = int(random(0, 2));
-        String m_name = randomname == 0 ? "中" : randomname == 1 ? "英" : "文";
+        int randomname = int(random(0, 3));
+        String m_name = "";
+        switch (career) {
+            case 0: m_name = new String[]{"文", "英", "國"}[randomname]; break;
+            case 1: m_name = new String[]{"微", "積", "分"}[randomname]; break;
+            case 2: m_name = new String[]{"文", "英", "國"}[randomname]; break;
+            case 3: m_name = new String[]{"文", "英", "國"}[randomname]; break;
+            case 4: m_name = new String[]{"文", "英", "國"}[randomname]; break;
+        }
         Monster.add(new Monster_id(
             new PVector(Player_id.XY.x + cos(randomangle) * random(width, width*2),
                                  Player_id.XY.y + sin(randomangle) * random(height, height*2)),
@@ -64,41 +73,43 @@ void shop() {
     textAlign(CENTER); 
     textSize(20); 
     fill(0);
+    String[] ability = {"", "", "", "", ""};
+    switch (career) {
+        case 0: ability = new String[]{"每按下方向鍵，朝該方向射出一本書本", 
+                            "每過一段時間隨機鎖定一個敵人射擊", 
+                            "按下空白鍵，朝四面八方散射書本", 
+                            "射出去的書本不會立即消失，將會停留在原地造成持續傷害，持續一段時間", 
+                            "書本觸碰到敵人後將不會消失，改為貫穿傷害"}; break;
+        case 1: ability = new String[]{"路徑上造成數字一半的傷害", 
+                            "0 變為一擊必殺", 
+                            "增加怪物當前血量的50%作為傷害", 
+                            "空白鍵將所有數字改為 9 (CD:1)", 
+                            "每次點擊多一次隨機攻擊"}; break;
+        case 2: ability = new String[]{"", 
+                            "", 
+                            "", 
+                            "", 
+                            ""}; break;
+        case 3: ability = new String[]{"", 
+                            "", 
+                            "", 
+                            "", 
+                            ""}; break;
+        case 4: ability = new String[]{"", 
+                            "", 
+                            "", 
+                            "", 
+                            ""}; break;
+    }
     
-    text("每按下方向鍵，朝該方向射出一本書本", width/2, height/2 + 200);
-    if (weapon_mode % 2 == 1) { 
-        fill(100, 0, 0); 
-        text("已解鎖", width/2, height/2 + 175); 
-        fill(0); 
-    }
-
-    text("每過一段時間隨機鎖定一個敵人射擊", width/2, height/2 + 100);
-    if (weapon_mode % 4 > 1) { 
-        fill(100, 0, 0); 
-        text("已解鎖", width/2, height/2 + 75); 
-        fill(0); 
-    }
-
-    text("按下空白鍵，朝四面八方散射書本", width/2, height/2);
-    if (weapon_mode % 8 > 3) { 
-        fill(100, 0, 0); 
-        text("已解鎖", width/2, height/2 - 25); 
-        fill(0); 
-    }
-
-    text("射出去的書本不會立即消失，將會停留在原地造成持續傷害，持續一段時間",
-            width/2, height/2 - 100);
-    if (weapon_mode % 16 > 7) { 
-        fill(100, 0, 0); 
-        text("已解鎖", width/2, height/2 - 125); 
-        fill(0); 
-    }
-
-    text("書本觸碰到敵人後將不會消失，改為貫穿傷害", width/2, height/2 - 200);
-    if (weapon_mode % 32 > 15) { 
-        fill(100, 0, 0); 
-        text("已解鎖", width/2, height/2 - 225); 
-        fill(0); 
+    for (int i = 0; i < 5; i++) {
+        fill(0);
+        text(ability[i], width/2, height/2 + 200 - i*100);
+        if (weapon_mode % (int(pow(2, i + 1))) > (int(pow(2, i)) - 1)) {
+            fill(100, 0, 0); 
+            text("已解鎖", width/2, height/2 + 200 - i*100 + 25); 
+            fill(0);
+        }
     }
 
     if (mousePressed && temp >= 60) {

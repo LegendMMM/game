@@ -10,6 +10,8 @@ class Player_id {
   }
 }
 
+Player_id            Player_id = new Player_id(new PVector(0, 0), new PVector(0, 0), 100, 10);
+
 // ─── 畫主角 ───
 void DrawPlayer() {
   switch (face) {
@@ -19,6 +21,13 @@ void DrawPlayer() {
     case 1:
       image(playerL, width/2, height/2, 100, 100);
       break;
+  }
+  switch (career) {
+    case 0: image(book, width/2 + 40, height/2 + 25, 50, 50); break;
+    case 1: image(computer, width/2 + 40, height/2 + 25, 50, 50); break;
+    case 2: image(music, width/2 + 40, height/2 + 25, 50, 50); break;
+    case 3: image(pen, width/2 + 40, height/2 + 25, 50, 50); break;
+    case 4: image(yaling, width/2 + 40, height/2 + 25, 50, 50); break;
   }
   textSize(20);
   textAlign(CENTER);

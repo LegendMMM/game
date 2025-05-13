@@ -16,6 +16,8 @@ class Monster_id {
   }
 }
 
+ArrayList<Monster_id> Monster   = new ArrayList<Monster_id>();
+
 void DrawMonster() {
   float PX = Player_id.XY.x + width/2;
   float PY = Player_id.XY.y + height/2;
@@ -30,7 +32,8 @@ void DrawMonster() {
     if (vector_length(PXY, m.XY) < 50) {
       Player_id.HP -= 1;
       m.HP -= 100;
-      if (m.HP <= 0) Monster.remove(i);
+      credit -= 1;
     }
+    if (m.HP <= 0){ Monster.remove(i); credit += 1; }
   }
 }

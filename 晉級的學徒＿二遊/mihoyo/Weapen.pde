@@ -1,9 +1,45 @@
+void mousePressed() {
+  switch (career) {
+    case 0:
+      Weapon_id.add(new Weapon_id(
+        new PVector(Player_id.XY.x + width/2, Player_id.XY.y + height/2),
+        vector_angle(new PVector(0, 0),
+        new PVector(mouseX - width/2, mouseY - height/2)), 15, 300));
+      break;
+    case 1:
+      float randomangle = random(0, 2 * PI);
+      Weapon_id_1.add(new Weapon_id_1(
+        new PVector(mouseX + Player_id.XY.x - 800 * cos(randomangle) , mouseY + Player_id.XY.y - 800 * sin(randomangle)),
+        new PVector(mouseX + Player_id.XY.x, mouseY + Player_id.XY.y),
+        randomangle, int(random(0, 10))));
+      if (weapon_mode % 32 > 15){ // 隨機攻擊 mode 5
+        randomangle = random(0, 2 * PI);
+        float randomX = random(-width, width); float randomY = random(-height, height);
+        Weapon_id_1.add(new Weapon_id_1(
+          new PVector(randomX + Player_id.XY.x - 800 * cos(randomangle) , randomY + Player_id.XY.y - 800 * sin(randomangle)),
+          new PVector(randomX + Player_id.XY.x, randomY + Player_id.XY.y),
+          randomangle, int(random(0, 10))));
+      }
+      break;
+    case 2:
+      break;
+    case 3:
+      break;
+    case 4:
+      weapon4.angle = vector_angle(new PVector(0, 0), new PVector(mouseX - width/2, mouseY - height/2)) - PI/3;    
+      break;
+  }
+}
+
+/////////////--------------文------------------------//////////////////
 class Weapon_id {
   PVector XY;  float angle, speed, time;
   Weapon_id(PVector XY, float angle, float speed, float time) {
     this.XY = XY; this.angle = angle; this.speed = speed; this.time = time;
   }
 }
+
+ArrayList<Weapon_id> Weapon_id = new ArrayList<Weapon_id>();
 
 void DrawWeapon() {
   PVector PXY = new PVector(Player_id.XY.x + width/2, Player_id.XY.y + height/2);
@@ -19,13 +55,13 @@ void DrawWeapon() {
                  vector_angle(PXY, Monster.get(int(random(Monster.size()))).XY), 15, 300));
 
   // mode 3
-  if (weapon_mode % 8 > 3 && key == ' ' && keyPressed && mode3_CD <= 0) {
+  if (weapon_mode % 8 > 3 && key == ' ' && keyPressed && space_CD <= 0) {
     for (int i = 0; i < 10; i++)
       Weapon_id.add(new Weapon_id(new PVector(PXY.x, PXY.y),
                    random(0, 2 * PI), 15, 300));
-    mode3_CD = 300;
+    space_CD = 300;
   }
-  mode3_CD -= 1;
+  space_CD -= 1;
 
   // 飛行 & 判定
   for (int i = Weapon_id.size() - 1; i >= 0; i--) {
@@ -42,7 +78,6 @@ void DrawWeapon() {
         if (weapon_mode % 32 > 15) m.time = 17;         // 貫穿
         else { Weapon_id.remove(i); removed = true; break; }
       }
-      if (m.HP <= 0) { Monster.remove(j); credit += 1; }
     }
     if (removed) break;
 
@@ -53,22 +88,97 @@ void DrawWeapon() {
   }
 }
 
-void mousePressed() {
-  switch (career) {
-    case 0:
-      Weapon_id.add(new Weapon_id(
-      new PVector(Player_id.XY.x + width/2, Player_id.XY.y + height/2),
-      vector_angle(new PVector(0, 0),
-      new PVector(mouseX - width/2, mouseY - height/2)), 15, 300));
-      break;
-
-    case 4:
-    weapon4.angle = vector_angle(new PVector(0, 0), new PVector(mouseX - width/2, mouseY - height/2)) - PI/3;    
-      break;
+/////////////--------------理------------------------//////////////////
+class Weapon_id_1 {
+  PVector XY, targetXY;  float angle; int num;
+  Weapon_id_1(PVector XY, PVector targetXY, float angle, int num) {
+    this.XY = XY; this.targetXY = targetXY; this.angle = angle; this.num = num;
   }
 }
 
-/////////////--------------體育------------------------//////////////////
+ArrayList<Weapon_id_1> Weapon_id_1 = new ArrayList<Weapon_id_1>();
+
+void DrawWeapon_1() {
+  textSize(50);
+  textAlign(CENTER);
+  fill(0, 255, 0);
+  for (int i = Weapon_id_1.size() - 1; i >= 0; i--) {
+    Weapon_id_1 w = Weapon_id_1.get(i);
+    w.XY.x += cos(w.angle) * 50;
+    w.XY.y += sin(w.angle) * 50;
+    text(w.num, w.XY.x, w.XY.y);
+    for (int j = Monster.size() - 1; j >= 0; j--) {
+      Monster_id m = Monster.get(j);
+      if (vector_length(w.targetXY, m.XY) < 100 && vector_length(w.targetXY, w.XY) < 100) {
+        if (weapon_mode % 4 > 1 && w.num == 0) { // 0 變成必殺 mode 2
+          m.HP -= m.HP;
+        }
+        if (weapon_mode % 8 > 3) { // 增加怪物當前血量的一半 mode 3
+          m.HP -= int(m.HP/2);
+        }
+        m.HP -= w.num;
+      }
+      if (weapon_mode % 2 == 1) { // 路徑傷害 mode 1
+        if (vector_length(w.XY, m.XY) < 100) {
+          m.HP -= w.num/2 ;
+          break;
+        }
+      }
+    }
+    if (vector_length(w.XY, w.targetXY) < 100) {
+      Weapon_id_1.remove(i);
+    }
+  }
+  fill(255);
+  if (weapon_mode % 16 > 7 && keyPressed && key == ' ' && space_CD <= 0) { // 空白鍵將所有數字改為 9 (CD:1) mode 4
+    for (int i = Weapon_id_1.size() - 1; i >= 0; i--) {
+      Weapon_id_1 w = Weapon_id_1.get(i);
+      w.num = 9;
+    }
+    space_CD = 60;
+  }
+  space_CD -= 1;
+}
+
+/////////////--------------音------------------------//////////////////
+class Weapon_id_2 {
+
+}
+void DrawWeapon_2() {
+  /*
+  if (weapon_mode % 2 == 1)
+  
+  if (weapon_mode % 4 > 1)
+
+  if (weapon_mode % 8 > 3)
+
+  if (weapon_mode % 16 > 7)
+  
+  if (weapon_mode % 32 > 15)
+  */
+
+}
+
+/////////////--------------藝------------------------//////////////////
+class Weapon_id_3 {
+
+}
+void DrawWeapon_3() {
+  /*
+  if (weapon_mode % 2 == 1)
+  
+  if (weapon_mode % 4 > 1)
+
+  if (weapon_mode % 8 > 3)
+
+  if (weapon_mode % 16 > 7)
+  
+  if (weapon_mode % 32 > 15)
+  */
+
+}
+
+/////////////--------------體------------------------//////////////////
 class Weapon_id_4 {
   float angle, speed, cd, time;
   Weapon_id_4() {
@@ -113,13 +223,13 @@ void DrawWeapon_4() {
                  vector_angle(PXY, Monster.get(int(random(Monster.size()))).XY), 15, 300));
 
   // mode 3
-  if (weapon_mode % 8 > 3 && key == ' ' && keyPressed && mode3_CD <= 0) {
+  if (weapon_mode % 8 > 3 && key == ' ' && keyPressed && space_CD <= 0) {
     for (int i = 0; i < 10; i++)
       Weapon_id.add(new Weapon_id(new PVector(PXY.x, PXY.y),
                    random(0, 2 * PI), 15, 300));
-    mode3_CD = 300;
+    space_CD = 300;
   }
-  mode3_CD -= 1;
+  space_CD -= 1;
 
   // 攻擊判定
 
