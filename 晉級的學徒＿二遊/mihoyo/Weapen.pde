@@ -99,14 +99,23 @@ class Weapon_id_1 {
 ArrayList<Weapon_id_1> Weapon_id_1 = new ArrayList<Weapon_id_1>();
 
 void DrawWeapon_1() {
-  textSize(50);
   textAlign(CENTER);
-  fill(0, 255, 0);
   for (int i = Weapon_id_1.size() - 1; i >= 0; i--) {
     Weapon_id_1 w = Weapon_id_1.get(i);
     w.XY.x += cos(w.angle) * 50;
     w.XY.y += sin(w.angle) * 50;
-    text(w.num, w.XY.x, w.XY.y);
+    
+    noStroke();
+    fill(0);
+    circle(w.XY.x, w.XY.y, 50);
+    fill(0, 255, 0);
+    textSize(50);
+    text(w.num, w.XY.x, w.XY.y + 20);
+    noFill();
+    stroke(255, 0, 0);
+    strokeWeight(5);
+    circle(w.targetXY.x, w.targetXY.y, 50);
+    noStroke();
     for (int j = Monster.size() - 1; j >= 0; j--) {
       Monster_id m = Monster.get(j);
       if (vector_length(w.targetXY, m.XY) < 100 && vector_length(w.targetXY, w.XY) < 100) {
