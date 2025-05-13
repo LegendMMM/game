@@ -32,6 +32,10 @@ void morning() {
     translate(-Player_id.XY.x, -Player_id.XY.y);
 
     Player_id.XY.add(Player_id.speed);
+    switch (career) {
+        case 0: DrawWeapon(); break;
+        case 4: DrawWeapon_4(); break;
+    }
     DrawWeapon();
     DrawMonster();
 

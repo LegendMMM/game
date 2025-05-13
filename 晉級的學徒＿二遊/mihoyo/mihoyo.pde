@@ -10,14 +10,18 @@ AudioPlayer bgm;
 int t = 0, T = 0;            // 計時
 int v = 10;                  // 速度上限
 int credit = 45;              // 學分
-int stage = -1;              // -1:開場 0:白天 1:商店 2:結束w
+int stage = -1;              // -1:開場 0:白天 1:商店 2:結束
+int career = 4;              // 職業        文理音藝體 0 1 2 3 4
 int level = 1;               // 商店購買次數
 int weapon_mode = 0;         // 武器位元狀態
 int mode3_CD = 0;            // 散射冷卻
 int face = 0;                // 0:右 1:左
 int temp = 0;                // 商店防誤觸計時
+float weapon_4_mode0_time = 0;   // 啞鈴攻擊冷卻
+boolean Attack = false;      // 攻擊狀態
 
-Player_id            Player_id = new Player_id(new PVector(0, 0), new PVector(0, 0), 10, 10);
+
+Player_id            Player_id = new Player_id(new PVector(0, 0), new PVector(0, 0), 100, 10);
 ArrayList<Weapon_id> Weapon_id = new ArrayList<Weapon_id>();
 ArrayList<Monster_id> Monster   = new ArrayList<Monster_id>();
 

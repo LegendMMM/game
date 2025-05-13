@@ -54,8 +54,75 @@ void DrawWeapon() {
 }
 
 void mousePressed() {
-  Weapon_id.add(new Weapon_id(
-    new PVector(Player_id.XY.x + width/2, Player_id.XY.y + height/2),
-    vector_angle(new PVector(0, 0),
-    new PVector(mouseX - width/2, mouseY - height/2)), 15, 300));
+  switch (career) {
+    case 0:
+      Weapon_id.add(new Weapon_id(
+      new PVector(Player_id.XY.x + width/2, Player_id.XY.y + height/2),
+      vector_angle(new PVector(0, 0),
+      new PVector(mouseX - width/2, mouseY - height/2)), 15, 300));
+      break;
+
+    case 4:
+    weapon4.angle = vector_angle(new PVector(0, 0), new PVector(mouseX - width/2, mouseY - height/2)) - PI/3;    
+      break;
+  }
+}
+
+/////////////--------------體育------------------------//////////////////
+class Weapon_id_4 {
+  float angle, speed, cd, time;
+  Weapon_id_4() {
+    this.angle = 0;
+    this.speed = 10; this.cd = 0; this.time = 0;
+  }
+}
+Weapon_id_4 weapon4 = new Weapon_id_4();
+
+//1攻擊擊退
+//2空白鍵向前衝刺 造成傷害
+//3左建平揮 右鍵圖次
+//4給怪物上dot
+//5站著時每秒回一滴血
+void DrawWeapon_4() {
+
+  PVector PXY = new PVector(Player_id.XY.x + width/2, Player_id.XY.y + height/2);
+  // mode 0
+  
+  if (mousePressed) {
+    Attack = true;
+  }
+  if (Attack && weapon4.cd == 0) {
+    weapon4.time++;
+    image(yaling, PXY.x + 150*(cos(weapon4.angle + weapon4.time/10)),
+    PXY.y + 150*sin(weapon4.angle + weapon4.time/10),
+    100, 100);
+    if (weapon4.time > 20) {
+      Attack = false;
+      weapon4.time = 0;
+      weapon4.angle = vector_angle(new PVector(0, 0), new PVector(mouseX - width/2, mouseY - height/2)) - PI/3;
+    }
+  }
+  // mode 1
+  if (weapon_mode % 2 == 1 && keyPressed && t % 30 == 0)
+    Weapon_id.add(new Weapon_id(new PVector(PXY.x, PXY.y),
+                 vector_angle(new PVector(0, 0), Player_id.speed), 15, 300));
+
+  // mode 2
+  if (weapon_mode % 4 > 1 && t % 30 == 0 && Monster.size() > 0)
+    Weapon_id.add(new Weapon_id(PXY,
+                 vector_angle(PXY, Monster.get(int(random(Monster.size()))).XY), 15, 300));
+
+  // mode 3
+  if (weapon_mode % 8 > 3 && key == ' ' && keyPressed && mode3_CD <= 0) {
+    for (int i = 0; i < 10; i++)
+      Weapon_id.add(new Weapon_id(new PVector(PXY.x, PXY.y),
+                   random(0, 2 * PI), 15, 300));
+    mode3_CD = 300;
+  }
+  mode3_CD -= 1;
+
+  // 攻擊判定
+
+    
+  
 }
