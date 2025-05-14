@@ -92,8 +92,8 @@ void shop() {
                             ""}; break;
         case 3: ability = new String[]{"空白鍵施放時間暫停", 
                             "敵人碰到水彩時會緩速", 
+                            "水彩持續時間增加", 
                             "水彩範圍增加", 
-                            "水彩持續效果增加", 
                             "水彩有拉回效果"}; break;
         case 4: ability = new String[]{"攻擊擊退", 
                             "空白鍵向前衝刺 消滅路進上敵人", 

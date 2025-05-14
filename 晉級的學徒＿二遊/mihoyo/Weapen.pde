@@ -198,7 +198,7 @@ void DrawWeapon_3() {
     Weapon_id_3 w = Weapon_id_3.get(i);
     fill(R, G, B);
     noStroke();
-    circle(w.XY.x, w.XY.y, size);
+    circle(w.XY.x, w.XY.y, w.size);
     fill(255);
     strokeWeight(5);
     for (int j = Monster.size() - 1; j >= 0; j--) {
