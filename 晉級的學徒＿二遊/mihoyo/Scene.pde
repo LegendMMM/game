@@ -8,7 +8,7 @@ void open() {
     textSize(30);
     text("遊玩方式", width/2, height/2);
     text("使用wasd進行上下左右移動，並且玩家會保持在畫面中心。", width/2, height/2 + 50);
-    text("你可以使用滑鼠來射擊", width/2, height/2 + 100);
+    text("你可以使用滑鼠來攻擊", width/2, height/2 + 100);
     text("獲得足夠的分數(50分)時，會進入到商店畫面。", width/2, height/2 + 150);
     text("死亡或是學分夠了，即結束遊戲。", width/2, height/2 + 200);
     text("按下空白鍵開始遊戲", width/2, height/2 + 300);

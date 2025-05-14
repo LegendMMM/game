@@ -42,9 +42,13 @@ void DrawPlayer() {
   textSize(20);
   textAlign(CENTER);
   if (space_CD > 0) space_CD -= 1;
-  text("CD: " + ( space_CD + abs(space_CD) )/120 , width/2, height/2 - 50);
+  text("CD: " + space_CD/60, width/2, height/2 - 50);
   text("HP: " + Player_id.HP, width/2, height/2 + 70);
-  text("XY: " + int(Player_id.XY.x) + ", " + int(Player_id.XY.y), width/2, height/2 + 90);
+  
+  
+  textSize(10);
+  textAlign(RIGHT);
+  text("XY: " + int(Player_id.XY.x) + ", " + int(Player_id.XY.y), width - 10, height - 30);
 }
 
 // ─── 鍵盤事件 ───

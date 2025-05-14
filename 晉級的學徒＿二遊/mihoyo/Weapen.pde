@@ -206,7 +206,7 @@ void DrawWeapon_3() {
       if (vector_length(w.XY, m.XY) < w.size) {
         w.size -= 1;
         if (weapon_mode % 4 > 1 && m.speed > 1) m.speed = 1; // 減速 mode 2
-        if (weapon_mode % 32 > 15){float l = w.XY.dist(m.XY);PVector v = PVector.sub(w.XY, m.XY); v = v.div(l*2); m.XY.add(v); }// 聚怪 mode 5
+        if (weapon_mode % 32 > 15){float l = w.XY.dist(m.XY); PVector v = PVector.sub(w.XY, m.XY); v = v.div(l*2); m.XY.add(v); }// 聚怪 mode 5
         m.HP -= int(random(0, 1.1));
       }
     }
