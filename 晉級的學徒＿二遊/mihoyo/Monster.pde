@@ -46,5 +46,12 @@ void DrawMonster() {
       credit -= 1;
     }
     if (m.HP <= 0){ Monster.remove(i); credit += 1; }
+    for (int j = i + 1; j < Monster.size(); j++) {
+      Monster_id m2 = Monster.get(j);
+      if (vector_length(m.XY, m2.XY) < 10) {
+        m.HP += m2.HP;
+        Monster.remove(i);
+      }
+    }
   }
 }
