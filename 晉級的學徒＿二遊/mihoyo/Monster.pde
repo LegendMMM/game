@@ -17,7 +17,7 @@ class Monster_id {
   
   void monster(PVector m, String name) {
     stroke(153); rect(m.x, m.y, 80, 80);
-    textAlign(CENTER); textSize(40); fill(0); text(name, m.x, m.y);
+    textAlign(CENTER); textSize(40); fill(0); text(name, m.x, m.y + 10);
     textSize(20); fill(255); text("HP: " + HP, m.x, m.y + 60);
   }
 }

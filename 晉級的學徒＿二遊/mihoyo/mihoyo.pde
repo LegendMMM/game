@@ -7,10 +7,10 @@ Minim  minim;
 AudioPlayer bgm;
 
 // ─── 全域狀態 ───
-int career = 4;              // 職業        文理音藝體 0 1 2 3 4
+int career = 3;              // 職業        文理音藝體 0 1 2 3 4
 int t = 0, T = 0;            // 計時
 int v = 10;                  // 速度上限
-int credit = 49;              // 學分
+int credit = 40;              // 學分
 int stage = -1;              // -1:開場 0:白天 1:商店 2:結束
 int level = 1;               // 商店購買次數
 int weapon_mode = 0;         // 武器位元狀態
@@ -41,7 +41,7 @@ void setup() {
     pen           = loadImage("pic/pen.PNG");
     music         = loadImage("pic/music.PNG");
     yaling        = loadImage("pic/yaling.PNG");
-    backgroundImg = loadImage("pic/background.PNG");
+    backgroundImg = loadImage("pic/background.jpg");
     playerL       = loadImage("pic/playerL.PNG");
     playerR       = loadImage("pic/playerR.PNG");
 }

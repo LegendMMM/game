@@ -24,13 +24,13 @@ void mousePressed() {
     case 2:
       break;
     case 3:
+      mouseDragged();
       break;
     case 4:
       weapon4.angle = vector_angle(new PVector(0, 0), new PVector(mouseX - width/2, mouseY - height/2)) - PI/3;    
       break;
   }
 }
-
 /////////////--------------文------------------------//////////////////
 class Weapon_id {
   PVector XY;  float angle, speed, time;
@@ -61,7 +61,6 @@ void DrawWeapon() {
                    random(0, 2 * PI), 15, 300));
     space_CD = 300;
   }
-  space_CD -= 1;
 
   // 飛行 & 判定
   for (int i = Weapon_id.size() - 1; i >= 0; i--) {
@@ -146,7 +145,6 @@ void DrawWeapon_1() {
     }
     space_CD = 60;
   }
-  space_CD -= 1;
 }
 
 /////////////--------------音------------------------//////////////////
@@ -170,21 +168,56 @@ void DrawWeapon_2() {
 
 /////////////--------------藝------------------------//////////////////
 class Weapon_id_3 {
-
+  PVector XY; float size;
+  Weapon_id_3(PVector XY, float size) {
+    this.size = size;
+    this.XY = XY;
+  }
 }
+float size = 50, R = random(255), G = random(255), B = random(255);
+void mouseDragged() {
+  size += random(-1, 1); R += random(-1, 1); G += random(-1, 1); B += random(-1, 1);
+  if (size < 10) size = 10;
+  if (R < 0) R = 0; if (R > 255) R = 255;
+  if (G < 0) G = 0; if (G > 255) G = 255;
+  if (B < 0) B = 0; if (B > 255) B = 255;
+  if (weapon_mode % 16 > 7 && size < 100) size = 100; // mode 4 變大
+  Weapon_id_3.add(new Weapon_id_3(
+        new PVector(mouseX + Player_id.XY.x, mouseY + Player_id.XY.y), size));
+  if (Weapon_id_3.size() > 100 ) {
+    if (weapon_mode % 8 > 3){ if (Weapon_id_3.size() > 200 ) Weapon_id_3.remove(0); } // mode 3 變長
+    else Weapon_id_3.remove(0);
+  }
+}
+
+ArrayList<Weapon_id_3> Weapon_id_3 = new ArrayList<Weapon_id_3>();
+
 void DrawWeapon_3() {
-  /*
-  if (weapon_mode % 2 == 1)
-  
-  if (weapon_mode % 4 > 1)
-
-  if (weapon_mode % 8 > 3)
-
-  if (weapon_mode % 16 > 7)
-  
-  if (weapon_mode % 32 > 15)
-  */
-
+  if (mousePressed) mouseDragged();
+  for (int i = Weapon_id_3.size() - 1; i >= 0; i--) {
+    Weapon_id_3 w = Weapon_id_3.get(i);
+    fill(R, G, B);
+    noStroke();
+    circle(w.XY.x, w.XY.y, size);
+    fill(255);
+    strokeWeight(5);
+    for (int j = Monster.size() - 1; j >= 0; j--) {
+      Monster_id m = Monster.get(j);
+      if (vector_length(w.XY, m.XY) < w.size) {
+        w.size -= 1;
+        if (weapon_mode % 4 > 1 && m.speed > 1) m.speed = 1; // 減速 mode 2
+        if (weapon_mode % 32 > 15){float l = w.XY.dist(m.XY);PVector v = PVector.sub(w.XY, m.XY); v = v.div(l*2); m.XY.add(v); }// 聚怪 mode 5
+        m.HP -= int(random(0, 1.1));
+      }
+    }
+  }
+  if (weapon_mode % 2 == 1 && keyPressed && key == ' ' && space_CD == 0) { // 時停 mode 1
+    for (int i = Monster.size() - 1; i >= 0; i--) {
+      Monster_id m = Monster.get(i);
+      m.speed = 0;
+      space_CD = 600;
+    }
+  }
 }
 
 /////////////--------------體------------------------//////////////////
@@ -292,7 +325,6 @@ void DrawWeapon_4() {
 
 
 
-  space_CD -= 1;
   weapon4.cd -= 1;
   weapon4.mode4_cd --;
   

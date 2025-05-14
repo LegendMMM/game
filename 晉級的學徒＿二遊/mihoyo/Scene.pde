@@ -48,9 +48,9 @@ void morning() {
         switch (career) {
             case 0: m_name = new String[]{"文", "英", "國"}[randomname]; break;
             case 1: m_name = new String[]{"微", "積", "分"}[randomname]; break;
-            case 2: m_name = new String[]{"文", "英", "國"}[randomname]; break;
-            case 3: m_name = new String[]{"文", "英", "國"}[randomname]; break;
-            case 4: m_name = new String[]{"文", "英", "國"}[randomname]; break;
+            case 2: m_name = new String[]{"", "", ""}[randomname]; break;
+            case 3: m_name = new String[]{"術", "美", "藝"}[randomname]; break;
+            case 4: m_name = new String[]{"體", "球", "動"}[randomname]; break;
         }
         Monster.add(new Monster_id(
             new PVector(Player_id.XY.x + cos(randomangle) * random(width, width*2),
@@ -90,11 +90,11 @@ void shop() {
                             "", 
                             "", 
                             ""}; break;
-        case 3: ability = new String[]{"", 
-                            "", 
-                            "", 
-                            "", 
-                            ""}; break;
+        case 3: ability = new String[]{"空白鍵施放時間暫停", 
+                            "敵人碰到水彩時會緩速", 
+                            "水彩範圍增加", 
+                            "水彩持續效果增加", 
+                            "水彩有拉回效果"}; break;
         case 4: ability = new String[]{"攻擊擊退", 
                             "空白鍵向前衝刺 消滅路進上敵人", 
                             "加大啞鈴", 
