@@ -48,7 +48,7 @@ void morning() {
         switch (career) {
             case 0: m_name = new String[]{"文", "英", "國"}[randomname]; break;
             case 1: m_name = new String[]{"微", "積", "分"}[randomname]; break;
-            case 2: m_name = new String[]{"", "", ""}[randomname]; break;
+            case 2: m_name = new String[]{"Do", "Re", "Me"}[randomname]; break;
             case 3: m_name = new String[]{"術", "美", "藝"}[randomname]; break;
             case 4: m_name = new String[]{"體", "球", "動"}[randomname]; break;
         }

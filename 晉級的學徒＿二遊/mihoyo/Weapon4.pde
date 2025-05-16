@@ -4,6 +4,7 @@ class Weapon_id_4 {
   PVector XY;
   float mode4_cd;
   int size;
+  
   Weapon_id_4() {
     this.angle = 0;
     this.speed = 10; this.cd = 0; this.time = 0; this.mode4_cd = 0; this.size = 0;
@@ -40,8 +41,10 @@ void DrawWeapon_4() {
     weapon4.size, weapon4.size);
     for (int i = Monster.size() - 1; i >= 0; i--) {
       Monster_id m = Monster.get(i);
-      if (vector_length(weapon4.XY , m.XY) < weapon4.size) {
-        m.HP -= Player_id.ATK/10;
+      if (vector_length(weapon4.XY , m.XY) < weapon4.size && m.hit == false) {
+        m.hit = true;
+        m.HP -= Player_id.ATK;
+        m.hitCD = 30;
         // mode 1 擊中後怪物擊退
         if (weapon_mode % 2 == 1 ) { 
         PVector knock = PVector.sub(m.XY, PXY);
@@ -100,15 +103,24 @@ void DrawWeapon_4() {
       random(0, 2 * PI), 15, 300));
     space_CD = 300;
   }
-
-
-
+  
+  // 更新怪物的被擊中冷卻，倒數至 0 後恢復可被擊中狀態
+  for (int i = Monster.size() - 1; i >= 0; i--) {
+    Monster_id m = Monster.get(i);
+    if (m.hitCD > 0) {
+      m.hitCD--;
+    } else {
+      m.hit = false;
+    }
+  }
   weapon4.cd -= 1;
   weapon4.mode4_cd --;
   
+  // mode 5 站著時每秒回一滴血
+  if (weapon_mode % 32 > 15 && t % 60 == 0) {
+    Player_id.HP = min(Player_id.HP + 1, Player_id.MAX_HP);
+  }
 
-  // 攻擊判定
-
-    
-  
 }
+    
+

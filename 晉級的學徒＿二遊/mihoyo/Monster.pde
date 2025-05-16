@@ -3,22 +3,27 @@ class Monster_id {
   float   HP, ATK, speed;
   int     time;
   String  name;
+  boolean hit; 
+  int hitCD; // 被擊中冷卻時間
+  // ── weapon4_DOT ──
   
-  int   dotTimer = 0;   // 剩餘 DOT 時間（frame）
-  float dotDps   = 0;   // 每 frame 扣血量
+  int   dotTimer ;   // 剩餘 DOT 時間（frame）
+  float dotDps   ;   // 每 frame 扣血量
   
   Monster_id(PVector XY, float HP, float ATK, float speed, int time, String name) {
     this.XY = XY; this.HP = HP; this.ATK = ATK; this.speed = speed;
     this.time = time; this.name = name;
+    this.hit = false;
     // 初始化 DOT
     this.dotTimer = 0;
     this.dotDps   = 0;
+    this.hitCD = 0;
   }
   
   void monster(PVector m, String name) {
     stroke(153); rect(m.x, m.y, 80, 80);
     textAlign(CENTER); textSize(40); fill(0); text(name, m.x, m.y + 10);
-    textSize(20); fill(255); text("HP: " + HP, m.x, m.y + 60);
+    textSize(20); fill(255); text("HP: " + nf(HP, 0, 1), m.x, m.y + 60);  // 顯示至小數點後 1 位
   }
 }
 

@@ -1,12 +1,13 @@
 class Player_id {
   PVector XY, speed;
-  int     HP, ATK;
+  int     HP, ATK, MAX_HP;
   
   Player_id(PVector XY, PVector speed, int HP, int ATK) {
     this.XY = XY;
     this.speed = speed;
     this.HP = HP;
     this.ATK = ATK;
+    this.MAX_HP = HP;      // 初始血量即為最大血量上限
   }
 }
 
@@ -33,7 +34,7 @@ void DrawPlayer() {
     if (weapon_mode % 32 > 15) {
       if (Player_id.speed.x == 0 && Player_id.speed.y == 0) {
         if (frameCount % 60 == 0) {  // 每60幀回復1點血量 (大約每秒)
-          Player_id.HP = min(Player_id.HP + 1, 100);  // 血量上限為100
+          Player_id.HP = min(Player_id.HP + 1, Player_id.MAX_HP);
         }
       }
     }break;
