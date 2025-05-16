@@ -5,6 +5,9 @@ PImage book, timer, computer, pen, music, yaling, backgroundImg, playerL, player
 PFont  TCFont;
 Minim  minim;
 AudioPlayer bgm;
+AudioPlayer touch; 
+JobResultDisplay jobDisplay;
+
 
 // ─── 全域狀態 ───
 int career = 2;              // 職業        文理音藝體 0 1 2 3 4
@@ -24,9 +27,14 @@ boolean Attack = false;      // 攻擊狀態
 
 // ─── Start ───
 void setup() {
+    // ── 初始化 ──
     minim = new Minim(this);
     bgm   = minim.loadFile("data/音樂.mp3");
-    //bgm.loop();
+    touch = minim.loadFile("data/節拍.mp3");
+    size(800, 800);
+    jobDisplay = new JobResultDisplay();
+    bgm.loop();
+    
 
     TCFont = createFont("NotoSansTC-Black.otf", 28);
     textFont(TCFont);
@@ -61,11 +69,7 @@ void draw() {
         stage = 2;
     }
     if (credit >= 128) {
-        background(0);
-        fill(255);
-        textAlign(CENTER);
-        textSize(50); text("恭喜你畢業了", width/2, height/2 - 100);
-        textSize(30); text("獲得學分: " + credit, width/2, height/2);
+        jobDisplay.displayJob(career);
         stage = 2;
     }
 

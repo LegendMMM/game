@@ -51,9 +51,11 @@ void DrawWeapon_2() {
         circle(weapon2.XY.x, weapon2.XY.y, 100);
         fill(255);
     }
-    if ((weapon2.time + 50) % weapon2.tick == 0){
-        //touch = minim.loadFile("touch.wav");
-        //touch.play();
+    // 播放節拍音效：標準節奏於第 40 幀（tick = 60），加速節奏於第 30 幀（tick = 40）
+    int playFrame = (weapon2.tick == 60) ? 40 : 30;
+    if (weapon2.time == playFrame){
+        touch.rewind();   // 從頭播放
+        touch.play();
     }
     if (mousePressed  && weapon2.attack == false) {
         if (vector_length(new PVector(PXY.x + mouseX - width/2, PXY.y + mouseY - height/2), weapon2.XY) < 50 
@@ -92,21 +94,21 @@ void DrawWeapon_2() {
     }
     
     if (weapon_mode % 8 > 3 ) {    // mode 3
-        if (key == ' ' && keyPressed && space_CD <= -60) {
-            space_CD = 30;
+        // 如果空白鍵被按下且冷卻結束，啟動拉近效果並設定冷卻時間
+        if (key == ' ' && keyPressed && space_CD == 0) {
+            space_CD = 120;   
         }
-        if (space_CD >= 0) {
+
+        // 冷卻期間內持續執行拉近效果
+        if (space_CD > 90) {
             for (int i = Monster.size() - 1; i >= 0; i--) {
-            Monster_id m = Monster.get(i);
+                Monster_id m = Monster.get(i);
                 if (vector_length(weapon2.XY , m.XY) < 1000) {
-                    //mode 3
                     m.XY.x -= cos(vector_angle(weapon2.XY, m.XY)) * 10;
                     m.XY.y -= sin(vector_angle(weapon2.XY, m.XY)) * 10;
-                    
                 }
-            } 
+            }
         }
-        
     }
     if (weapon2.draw){
         noFill();
@@ -138,5 +140,5 @@ void DrawWeapon_2() {
   
 //   if (weapon_mode % 32 > 15)
   
-    space_CD --;
+    if (space_CD > 0) space_CD--;
 }
