@@ -7,7 +7,7 @@ Minim  minim;
 AudioPlayer bgm;
 
 // ─── 全域狀態 ───
-int career = 3;              // 職業        文理音藝體 0 1 2 3 4
+int career = 2;              // 職業        文理音藝體 0 1 2 3 4
 int t = 0, T = 0;            // 計時
 int v = 10;                  // 速度上限
 int credit = 40;              // 學分
@@ -26,7 +26,7 @@ boolean Attack = false;      // 攻擊狀態
 void setup() {
     minim = new Minim(this);
     bgm   = minim.loadFile("data/音樂.mp3");
-    bgm.loop();
+    //bgm.loop();
 
     TCFont = createFont("NotoSansTC-Black.otf", 28);
     textFont(TCFont);

@@ -147,24 +147,6 @@ void DrawWeapon_1() {
   }
 }
 
-/////////////--------------音------------------------//////////////////
-class Weapon_id_2 {
-
-}
-void DrawWeapon_2() {
-  /*
-  if (weapon_mode % 2 == 1)
-  
-  if (weapon_mode % 4 > 1)
-
-  if (weapon_mode % 8 > 3)
-
-  if (weapon_mode % 16 > 7)
-  
-  if (weapon_mode % 32 > 15)
-  */
-
-}
 
 /////////////--------------藝------------------------//////////////////
 class Weapon_id_3 {
