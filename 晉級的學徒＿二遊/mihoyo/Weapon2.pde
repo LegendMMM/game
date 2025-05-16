@@ -63,11 +63,12 @@ void DrawWeapon_2() {
             weaponXY = new PVector(weapon2.XY.x, weapon2.XY.y);
             weapon2.attack = true;
             float damage = 0;
-            if (weapon_mode % 4 > 1) {
-                damage = weapon2.damage - abs(30 - (weapon2.time));   //mode 2
             // mode 5
-            }else if (weapon_mode % 32 > 15) {
+            if (weapon_mode % 32 > 15) {
                 damage = weapon2.damage;
+            
+            }else if (weapon_mode % 4 > 1) {
+                damage = weapon2.damage - abs(30 - (weapon2.time));   //mode 2
             }
             else {
                 damage = weapon2.damage - abs(40 - (weapon2.time));   //mode 0
